@@ -1,4 +1,4 @@
-# Companies Editor  
+# Companies Editor (TypeScript, React, Redux)
 Note: when infinite scroll is activated, adding new company to an empty table will trigger the creation of twenty new companies until the last table row is out of the viewport.
 ## Installation:  
 1. Clone the repository (or download ZIP):
