@@ -1,8 +1,6 @@
-export const initialState = [
+export const workersInitialState = [
   {
-    id: 1,
-    name: "ДомСельхозРаботы",
-    address: "г. Санкт-Петербург, ул. Карусельная, д. 14, оф. 525",
+    companyId: 1,
     employees: [
       {
         id: 1,
@@ -67,9 +65,7 @@ export const initialState = [
     ],
   },
   {
-    id: 2,
-    name: "СтройМастер",
-    address: "г. Москва, ул. Ленина, д. 10, оф. 201",
+    companyId: 2,
     employees: [
       {
         id: 1,
@@ -134,9 +130,7 @@ export const initialState = [
     ],
   },
   {
-    id: 3,
-    name: "ГК АдептСтрой",
-    address: "г. Нижний Новгород, пр. Гагарина, д. 20, помещ. 189",
+    companyId: 3,
     employees: [
       {
         id: 1,
@@ -201,9 +195,7 @@ export const initialState = [
     ],
   },
   {
-    id: 4,
-    name: "РосРемонт",
-    address: "г. Иркутск, ул. Декабрьских Событий, д. 88",
+    companyId: 4,
     employees: [
       {
         id: 1,
@@ -268,9 +260,7 @@ export const initialState = [
     ],
   },
   {
-    id: 5,
-    name: "СибирьЭнерго",
-    address: "г. Тюмень, ул. Киевская, д. 74А, помещ. 14",
+    companyId: 5,
     employees: [
       {
         id: 1,
@@ -335,9 +325,7 @@ export const initialState = [
     ],
   },
   {
-    id: 6,
-    name: "Агропромэнерго",
-    address: "Вологодская обл., Череповецкий р-н, д. Ясная Поляна",
+    companyId: 6,
     employees: [
       {
         id: 1,
@@ -402,9 +390,7 @@ export const initialState = [
     ],
   },
   {
-    id: 7,
-    name: "АТОМЭНЕРГОМОНТАЖ",
-    address: "г. Калининград, ул. 2-я Большая Окружная, д. 90",
+    companyId: 7,
     employees: [
       {
         id: 1,
@@ -469,9 +455,7 @@ export const initialState = [
     ],
   },
   {
-    id: 8,
-    name: "СИНТЕЗ-ЭЛ",
-    address: "г. Людиново, ул. К.Маркса, д. 2",
+    companyId: 8,
     employees: [
       {
         id: 1,
@@ -536,9 +520,7 @@ export const initialState = [
     ],
   },
   {
-    id: 9,
-    name: "МОДУЛЬСТРОЙ",
-    address: "г. Новороссийск, с. Гайдук, Новороссийское шоссе, д. 24",
+    companyId: 9,
     employees: [
       {
         id: 1,
@@ -603,9 +585,7 @@ export const initialState = [
     ],
   },
   {
-    id: 10,
-    name: "ДОРТЕХСТРОЙ",
-    address: "г. Липецк, ул. Доватора, д. 12-А",
+    companyId: 10,
     employees: [
       {
         id: 1,

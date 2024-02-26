@@ -9,10 +9,15 @@ import { companyAdded } from "./companiesSlice"
 import { nanoid } from "@reduxjs/toolkit"
 
 const CompaniesList: FunctionComponent = () => {
+  // TODO:
+  // 1. структура данных для сотрудников выбрана не очень удачная, поэтому и в селекторе на каждое изменение стора идет поиск по всем компаниям и в слайсе огромное количество лишних итераций.
+  // 2. Также не хватает декомпозиции и более эффективного распределения состояний, сейчас много состояний концентрируется в крупном компоненте, что приведет к лишним рендерам.
+  // 3. Мютить кнопку Delete, если ряды таблицы не выделены
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([])
   const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
 
   const companies = useAppSelector(state => state.companies)
+  const workers = useAppSelector(state => state.workers)
   const dispatch = useAppDispatch()
 
   const observer = useRef<IntersectionObserver | undefined>()
@@ -107,8 +112,11 @@ const CompaniesList: FunctionComponent = () => {
           </thead>
           <tbody>
             {companies.map((company, i) => {
+              const team = workers.find(e => e.companyId === company.id)
+              const employeesNumber = team?.employees.length || 0
+
+              // if the company is last on the list, an infinite scroll observer is added as ref
               if (i === companies.length - 1) {
-                const employeesNumber = company.employees.length || 0
                 return (
                   <CompaniesTableRow
                     ref={observerTarget}
@@ -127,7 +135,7 @@ const CompaniesList: FunctionComponent = () => {
                     key={company.id}
                     companyId={company.id}
                     companyName={company.name}
-                    employeesNumber={company.employees.length}
+                    employeesNumber={employeesNumber}
                     address={company.address}
                     selectedCompanies={selectedCompanies}
                     handleSelectCompany={handleSelectCompany}

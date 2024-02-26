@@ -17,6 +17,10 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
   const company = useAppSelector(state =>
     state.companies.find(company => company.id === companyId),
   )
+  const employees = useAppSelector(
+    state =>
+      state.workers.find(team => team.companyId === company?.id)?.employees,
+  )
 
   const [selectedWorkers, setSelectedWorkers] = useState<number[]>([])
 
@@ -35,18 +39,17 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
   }
 
   function handleSelectAll() {
-    if (company) {
-      if (selectedWorkers.length < company.employees.length) {
-        const allWorkersIds = company.employees.map(e => e.id)
+    if (company && employees) {
+      if (selectedWorkers.length < employees.length) {
+        const allWorkersIds = employees?.map(e => e.id)
         setSelectedWorkers(allWorkersIds)
       } else setSelectedWorkers([])
     }
   }
 
-  if (company && company.employees) {
+  if (company && employees) {
     const isCheckedSelectAllCheckbox =
-      company.employees.length === selectedWorkers.length &&
-      company.employees.length > 0
+      employees.length === selectedWorkers.length && employees.length > 0
 
     return (
       <div className="table workers">
@@ -80,7 +83,7 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
             </tr>
           </thead>
           <tbody>
-            {company.employees.map(worker => (
+            {employees.map(worker => (
               <WorkersTableRow
                 key={`${worker.id}-${worker.lastName}-${worker.firstName}-${worker.position}`}
                 companyId={companyId}

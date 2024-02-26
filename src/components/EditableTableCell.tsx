@@ -1,9 +1,7 @@
 import { useState, type FunctionComponent, useRef } from "react"
 import { useAppDispatch } from "../app/hooks"
-import {
-  companyChanged,
-  workerChanged,
-} from "../features/companies/companiesSlice"
+import { companyChanged } from "../features/companies/companiesSlice"
+import { workerChanged } from "../features/workers/workersSlice"
 
 interface EditableTableCellProps {
   origin:

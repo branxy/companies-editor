@@ -4,10 +4,11 @@ import { useAppDispatch, useAppSelector } from "../app/hooks"
 import {
   companyAdded,
   companyDeleted,
-  workerAdded,
-  workerDeleted,
 } from "../features/companies/companiesSlice"
+import { workerAdded, workerDeleted } from "../features/workers/workersSlice"
 import { nanoid } from "@reduxjs/toolkit"
+
+import DeleteActionBtn from "./DeleteActionBtn"
 
 interface TableActionBtnsProps {
   origin: "companies" | "workers"
@@ -31,6 +32,10 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
   setIsInfiniteScroll,
 }) => {
   const companies = useAppSelector(state => state.companies)
+  const employees = useAppSelector(
+    state =>
+      state.workers.find(team => team.companyId === companyId)?.employees,
+  )
 
   const dispatch = useAppDispatch()
 
@@ -49,23 +54,20 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
         )
         break
       case "workers":
-        {
-          const employees = companies.find(c => c.id === companyId)?.employees
-
-          if (employees) {
-            dispatch(
-              workerAdded({
-                companyId,
-                newWorker: {
-                  id: nanoid(),
-                  firstName: "",
-                  lastName: `Новый сотрудник ${employees.length + 1}`,
-                  position: "",
-                },
-              }),
-            )
-          }
+        if (employees) {
+          dispatch(
+            workerAdded({
+              companyId,
+              newWorker: {
+                id: nanoid(),
+                firstName: "",
+                lastName: `Новый сотрудник ${employees.length + 1}`,
+                position: "",
+              },
+            }),
+          )
         }
+
         break
       default:
         throw new Error("Unknown type of origin:" + origin)
@@ -101,9 +103,12 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
       <button className="add" onClick={handleAddRow}>
         <span className="material-symbols-outlined">add</span>
       </button>
-      <button className="delete" onClick={handleDeleteRow}>
-        <span className="material-symbols-outlined">delete</span>
-      </button>
+      <DeleteActionBtn
+        origin={origin}
+        handleDeleteRow={handleDeleteRow}
+        selectedCompanies={selectedCompanies}
+        selectedWorkers={selectedWorkers}
+      />
       {origin === "companies" && setIsInfiniteScroll && (
         <div className="infinite-scroll">
           <input
