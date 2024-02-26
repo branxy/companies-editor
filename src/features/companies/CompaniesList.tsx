@@ -9,10 +9,6 @@ import { companyAdded } from "./companiesSlice"
 import { nanoid } from "@reduxjs/toolkit"
 
 const CompaniesList: FunctionComponent = () => {
-  // TODO:
-  // 1. структура данных для сотрудников выбрана не очень удачная, поэтому и в селекторе на каждое изменение стора идет поиск по всем компаниям и в слайсе огромное количество лишних итераций.
-  // 2. Также не хватает декомпозиции и более эффективного распределения состояний, сейчас много состояний концентрируется в крупном компоненте, что приведет к лишним рендерам.
-  // 3. Мютить кнопку Delete, если ряды таблицы не выделены
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([])
   const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
 
