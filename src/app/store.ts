@@ -1,13 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
-import companiesReducer from "../features/companies/companiesSlice"
-import workersSlice from "../features/workers/workersSlice"
+import { companiesSlice } from "../features/companies/companiesSlice"
+import { workersSlice } from "../features/workers/workersSlice"
+
+const rootReducer = combineSlices(companiesSlice, workersSlice)
 
 export const store = configureStore({
-  reducer: {
-    companies: companiesReducer,
-    workers: workersSlice,
-  },
+  reducer: rootReducer,
 })
 
 export type RootState = ReturnType<typeof store.getState>
