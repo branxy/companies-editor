@@ -1,56 +1,78 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { workersInitialState } from "./workersInitialState"
+import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit"
+import { type Worker, workersInitialState } from "./workersInitialState"
+import { type Company } from "../companies/companiesInitialState"
+import { type EditableTableCellProps } from "../../components/EditableTableCell"
 
 export const workersSlice = createSlice({
   name: "workers",
   initialState: workersInitialState,
-  reducers: {
-    workerAdded(state, action) {
-      const { companyId, newWorker } = action.payload
-      const team = state.find(team => team.companyId === companyId)
+  reducers: create => ({
+    workerAdded: create.preparedReducer(
+      (companyId: Company["id"], newWorkerNumber: number) => {
+        const newWorkerId = nanoid()
 
-      if (team) {
-        team.employees.push(newWorker)
-      }
-    },
+        return { payload: { companyId, newWorkerId, newWorkerNumber } }
+      },
+      (state, action) => {
+        const { companyId, newWorkerId, newWorkerNumber } = action.payload
 
-    workerChanged(state, action) {
-      const { origin, companyId, workerId } = action.payload
-
-      const worker = state
-        .find(team => team.companyId === companyId)
-        ?.employees.find(e => e.id === workerId)
-      if (worker) {
-        switch (origin) {
-          case "worker/lastName":
-            worker.lastName = action.payload.lastName
-            break
-          case "worker/firstName":
-            worker.firstName = action.payload.firstName
-            break
-          case "worker/position":
-            worker.position = action.payload.position
-            break
-          default:
-            throw new Error("Unknown type of origin:" + origin)
+        const newWorker: Worker = {
+          id: newWorkerId,
+          companyId,
+          firstName: "",
+          lastName: `Новый сотрудник ${newWorkerNumber}`,
+          position: "",
         }
-      }
-    },
 
-    workerDeleted(state, action) {
-      const team = state.find(c => c.companyId === action.payload.companyId)
-      const workersToDelete = action.payload.selectedWorkers
-      if (team) {
-        const { employees } = team
-        const newState = employees.filter(employee => {
-          if (workersToDelete.includes(employee.id)) {
-            return false
-          } else return true
-        })
-        team.employees = newState
-      }
-    },
-  },
+        state.push(newWorker)
+      },
+    ),
+    workerChanged: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          origin: EditableTableCellProps["origin"]
+          companyId: Company["id"]
+          workerId: Worker["id"]
+          firstName?: Worker["firstName"]
+          lastName?: Worker["lastName"]
+          position?: Worker["position"]
+        }>,
+      ) => {
+        const { origin, workerId } = action.payload
+
+        const worker = state.find(w => w.id === workerId)
+        if (worker) {
+          switch (origin) {
+            case "worker/lastName":
+              worker.lastName = action.payload.lastName!
+              break
+            case "worker/firstName":
+              worker.firstName = action.payload.firstName!
+              break
+            case "worker/position":
+              worker.position = action.payload.position!
+              break
+            default:
+              throw new Error("Unknown type of origin:" + origin)
+          }
+        }
+      },
+    ),
+    workerDeleted: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          selectedWorkersIds: Worker["id"][]
+        }>,
+      ) => {
+        const { selectedWorkersIds: workersToDelete } = action.payload
+        const newState = state.filter(w => !workersToDelete.includes(w.id))
+
+        return newState
+      },
+    ),
+  }),
 })
 
 export const { workerAdded, workerChanged, workerDeleted } =

@@ -57,8 +57,8 @@ const EditableTableCell: FunctionComponent<EditableTableCellProps> = ({
         dispatch(
           workerChanged({
             origin,
-            companyId,
-            workerId,
+            companyId: companyId!,
+            workerId: workerId!,
             lastName: value,
           }),
         )
@@ -67,8 +67,8 @@ const EditableTableCell: FunctionComponent<EditableTableCellProps> = ({
         dispatch(
           workerChanged({
             origin,
-            companyId,
-            workerId,
+            companyId: companyId!,
+            workerId: workerId!,
             firstName: value,
           }),
         )
@@ -77,8 +77,8 @@ const EditableTableCell: FunctionComponent<EditableTableCellProps> = ({
         dispatch(
           workerChanged({
             origin,
-            companyId,
-            workerId,
+            companyId: companyId!,
+            workerId: workerId!,
             position: value,
           }),
         )

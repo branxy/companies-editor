@@ -56,17 +56,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
         break
       case "workers":
         if (employees) {
-          dispatch(
-            workerAdded({
-              companyId,
-              newWorker: {
-                id: nanoid(),
-                firstName: "",
-                lastName: `Новый сотрудник ${employees.length + 1}`,
-                position: "",
-              },
-            }),
-          )
+          dispatch(workerAdded(companyId!, employees.length))
         }
 
         break
@@ -86,12 +76,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
         if (setSelectedCompanies) setSelectedCompanies([])
         break
       case "workers":
-        dispatch(
-          workerDeleted({
-            companyId,
-            selectedWorkers,
-          }),
-        )
+        dispatch(workerDeleted({ selectedWorkersIds: selectedWorkersIds! }))
         if (setSelectedWorkers) setSelectedWorkers([])
         break
       default:
