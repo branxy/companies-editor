@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { companiesInitialState } from "./companiesInitialState"
+import { companiesInitialState, type Company } from "./companiesInitialState"
+import { createAppSelector } from "../../app/hooks"
 
 export const companiesSlice = createSlice({
   name: "companies",
@@ -39,8 +40,18 @@ export const companiesSlice = createSlice({
       })
     },
   },
+  selectors: {
+    selectAllCompanies: state => state,
+  },
 })
 export const { companyAdded, companyChanged, companyDeleted } =
   companiesSlice.actions
+
+export const { selectAllCompanies } = companiesSlice.selectors
+
+export const selectCompanyById = createAppSelector(
+  [selectAllCompanies, (state, id: Company["id"]) => id],
+  (state, id) => state.find(company => company.id === id),
+)
 
 export default companiesSlice.reducer

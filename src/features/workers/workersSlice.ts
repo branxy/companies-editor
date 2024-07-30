@@ -2,6 +2,7 @@ import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit"
 import { type Worker, workersInitialState } from "./workersInitialState"
 import { type Company } from "../companies/companiesInitialState"
 import { type EditableTableCellProps } from "../../components/EditableTableCell"
+import { createAppSelector } from "../../app/hooks"
 
 export const workersSlice = createSlice({
   name: "workers",
@@ -73,7 +74,17 @@ export const workersSlice = createSlice({
       },
     ),
   }),
+  selectors: {
+    selectAllWorkers: state => state,
+  },
 })
+
+export const { selectAllWorkers } = workersSlice.selectors
+
+export const selectWorkersByCompanyId = createAppSelector(
+  [selectAllWorkers, (state, id?: Company["id"]) => id],
+  (state, id) => state.filter(worker => worker.companyId === id),
+)
 
 export const { workerAdded, workerChanged, workerDeleted } =
   workersSlice.actions

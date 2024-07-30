@@ -6,7 +6,11 @@ import {
   companyAdded,
   companyDeleted,
 } from "../features/companies/companiesSlice"
-import { workerAdded, workerDeleted } from "../features/workers/workersSlice"
+import {
+  selectWorkersByCompanyId,
+  workerAdded,
+  workerDeleted,
+} from "../features/workers/workersSlice"
 
 import { type Worker } from "../features/workers/workersInitialState"
 import DeleteActionBtn from "./DeleteActionBtn"
@@ -35,7 +39,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
 }) => {
   const companies = useAppSelector(state => state.companies)
   const employees = useAppSelector(state =>
-    state.workers.filter(worker => worker.companyId === companyId),
+    selectWorkersByCompanyId(state, companyId),
   )
 
   const dispatch = useAppDispatch()

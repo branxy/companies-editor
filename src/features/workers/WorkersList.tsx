@@ -7,9 +7,11 @@ import { type Company } from "../companies/companiesInitialState"
 
 import WorkersTableRow from "./WorkersTableRow"
 import TableActionBtns from "../../components/TableActionBtns"
+import { selectCompanyById } from "../companies/companiesSlice"
+import { selectWorkersByCompanyId } from "./workersSlice"
 
 interface WorkersListProps {
-  companyId: RootState["companies"][0]["id"] | undefined
+  companyId: RootState["companies"][0]["id"]
   selectedCompaniesIds: Company["id"][]
 }
 
@@ -17,11 +19,9 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
   companyId,
   selectedCompaniesIds,
 }) => {
-  const company = useAppSelector(
-    state => state.companies.find(company => company.id === companyId)!,
-  )
+  const company = useAppSelector(state => selectCompanyById(state, companyId))!
   const employees = useAppSelector(state =>
-    state.workers.filter(w => w.companyId === companyId),
+    selectWorkersByCompanyId(state, companyId),
   )
 
   const [
