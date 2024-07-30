@@ -1,6 +1,10 @@
 import { useCallback, useRef, useState, type FunctionComponent } from "react"
 
-import { useAppDispatch, useAppSelector, useSelectRows } from "../../app/hooks"
+import {
+  useAppDispatch,
+  useAppSelector,
+  useSelectCompanyTableRows,
+} from "../../app/hooks"
 import { nanoid } from "@reduxjs/toolkit"
 import { companyAdded } from "./companiesSlice"
 
@@ -21,7 +25,7 @@ const CompaniesList: FunctionComponent = () => {
     handleSelectAllCompanies,
     lastSelectedCompany,
     isCheckedCheckbox,
-  ] = useSelectRows(companies)
+  ] = useSelectCompanyTableRows(companies)
 
   const observer = useRef<IntersectionObserver | undefined>()
   const observerTarget = useCallback(
@@ -91,8 +95,8 @@ const CompaniesList: FunctionComponent = () => {
           </thead>
           <tbody>
             {companies.map((company, i) => {
-              const team = workers.find(e => e.companyId === company.id)
-              const employeesNumber = team?.employees.length || 0
+              const team = workers.filter(w => w.companyId === company.id)
+              const employeesNumber = team?.length || 0
 
               // if the company is last on the list, an infinite scroll observer is added as ref
               if (i === companies.length - 1) {
@@ -128,7 +132,7 @@ const CompaniesList: FunctionComponent = () => {
       {selectedCompaniesIds.length ? (
         <WorkersList
           companyId={lastSelectedCompany}
-          selectedCompanies={selectedCompaniesIds}
+          selectedCompaniesIds={selectedCompaniesIds}
         />
       ) : (
         ""

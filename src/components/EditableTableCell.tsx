@@ -3,15 +3,18 @@ import { useAppDispatch } from "../app/hooks"
 import { companyChanged } from "../features/companies/companiesSlice"
 import { workerChanged } from "../features/workers/workersSlice"
 
-interface EditableTableCellProps {
+import { type Worker } from "../features/workers/workersInitialState"
+import { type Company } from "../features/companies/companiesInitialState"
+
+export interface EditableTableCellProps {
   origin:
     | "company/name"
     | "company/address"
     | "worker/lastName"
     | "worker/firstName"
     | "worker/position"
-  companyId: number | undefined
-  workerId?: number
+  companyId?: Company["id"]
+  workerId?: Worker["id"]
   cellValue: string
 }
 

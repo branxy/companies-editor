@@ -1,55 +1,39 @@
-import { useState, type FunctionComponent, useEffect } from "react"
+import { type FunctionComponent } from "react"
+
 import { type RootState } from "../../app/store"
+import { useAppSelector, useSelectWorkerTableRows } from "../../app/hooks"
+
+import { type Company } from "../companies/companiesInitialState"
 
 import WorkersTableRow from "./WorkersTableRow"
-import { useAppSelector } from "../../app/hooks"
 import TableActionBtns from "../../components/TableActionBtns"
 
 interface WorkersListProps {
   companyId: RootState["companies"][0]["id"] | undefined
-  selectedCompanies: number[]
+  selectedCompaniesIds: Company["id"][]
 }
 
 const WorkersList: FunctionComponent<WorkersListProps> = ({
   companyId,
-  selectedCompanies,
+  selectedCompaniesIds,
 }) => {
-  const company = useAppSelector(state =>
-    state.companies.find(company => company.id === companyId),
+  const company = useAppSelector(
+    state => state.companies.find(company => company.id === companyId)!,
   )
-  const employees = useAppSelector(
-    state =>
-      state.workers.find(team => team.companyId === company?.id)?.employees,
+  const employees = useAppSelector(state =>
+    state.workers.filter(w => w.companyId === companyId),
   )
 
-  const [selectedWorkers, setSelectedWorkers] = useState<number[]>([])
-
-  useEffect(() => {
-    setSelectedWorkers([])
-  }, [selectedCompanies])
-
-  function handleSelectWorker(workerId: number) {
-    if (!selectedWorkers) {
-      setSelectedWorkers([workerId])
-    } else if (!selectedWorkers.includes(workerId)) {
-      setSelectedWorkers([...selectedWorkers, workerId])
-    } else {
-      setSelectedWorkers(selectedWorkers.filter(id => id !== workerId))
-    }
-  }
-
-  function handleSelectAll() {
-    if (company && employees) {
-      if (selectedWorkers.length < employees.length) {
-        const allWorkersIds = employees?.map(e => e.id)
-        setSelectedWorkers(allWorkersIds)
-      } else setSelectedWorkers([])
-    }
-  }
+  const [
+    selectedWorkersIds,
+    setSelectedWorkersIds,
+    handleSelectWorker,
+    handleSelectAllWorkers,
+  ] = useSelectWorkerTableRows(company, employees, selectedCompaniesIds)
 
   if (company && employees) {
     const isCheckedSelectAllCheckbox =
-      employees.length === selectedWorkers.length && employees.length > 0
+      employees.length === selectedWorkersIds.length && employees.length > 0
 
     return (
       <div className="table workers">
@@ -57,8 +41,8 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
         <TableActionBtns
           origin="workers"
           companyId={companyId}
-          selectedWorkers={selectedWorkers}
-          setSelectedWorkers={setSelectedWorkers}
+          selectedWorkersIds={selectedWorkersIds}
+          setSelectedWorkers={setSelectedWorkersIds}
         />
         <table>
           <colgroup>
@@ -74,7 +58,7 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
                   type="checkbox"
                   name="select-all"
                   checked={isCheckedSelectAllCheckbox}
-                  onChange={handleSelectAll}
+                  onChange={handleSelectAllWorkers}
                 />
               </th>
               <th>Фамилия</th>
@@ -86,12 +70,12 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
             {employees.map(worker => (
               <WorkersTableRow
                 key={`${worker.id}-${worker.lastName}-${worker.firstName}-${worker.position}`}
-                companyId={companyId}
+                companyId={companyId!}
                 workerId={worker.id}
                 firstName={worker.firstName}
                 lastName={worker.lastName}
                 position={worker.position}
-                selectedWorkers={selectedWorkers}
+                selectedWorkersIds={selectedWorkersIds}
                 handleSelectWorker={handleSelectWorker}
               />
             ))}

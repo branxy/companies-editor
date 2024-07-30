@@ -1,10 +1,11 @@
 import { type FunctionComponent } from "react"
+import { type Worker } from "../features/workers/workersInitialState"
 
 interface DeleteActionBtnProps {
   origin: "companies" | "workers"
   handleDeleteRow: () => void
   selectedCompanies?: number[]
-  selectedWorkers?: number[]
+  selectedWorkers?: Worker["id"][]
 }
 
 const DeleteActionBtn: FunctionComponent<DeleteActionBtnProps> = ({

@@ -1,14 +1,17 @@
-import { type FunctionComponent } from "react"
 import EditableTableCell from "../../components/EditableTableCell"
 
+import { type FunctionComponent } from "react"
+import { type Company } from "../companies/companiesInitialState"
+import { type Worker } from "./workersInitialState"
+
 interface WorkersTableRowProps {
-  companyId: number | undefined
-  workerId: number
-  firstName: string
-  lastName: string
-  position: string
-  selectedWorkers: number[] | undefined
-  handleSelectWorker: (workerId: number) => void
+  companyId: Company["id"]
+  workerId: Worker["id"]
+  firstName: Worker["firstName"]
+  lastName: Worker["lastName"]
+  position: Worker["position"]
+  selectedWorkersIds: Worker["id"][] | undefined
+  handleSelectWorker: (workerId: Worker["id"]) => void
 }
 
 const WorkersTableRow: FunctionComponent<WorkersTableRowProps> = ({
@@ -17,10 +20,10 @@ const WorkersTableRow: FunctionComponent<WorkersTableRowProps> = ({
   firstName,
   lastName,
   position,
-  selectedWorkers,
+  selectedWorkersIds,
   handleSelectWorker,
 }) => {
-  const isSelectedRow = selectedWorkers?.find(id => id === workerId)
+  const isSelectedRow = selectedWorkersIds?.find(id => id === workerId)
   return (
     <tr className={isSelectedRow ? "worker-selected" : ""}>
       <td>

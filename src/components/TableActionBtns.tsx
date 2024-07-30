@@ -1,40 +1,41 @@
 import { type FunctionComponent } from "react"
 
+import { nanoid } from "@reduxjs/toolkit"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import {
   companyAdded,
   companyDeleted,
 } from "../features/companies/companiesSlice"
 import { workerAdded, workerDeleted } from "../features/workers/workersSlice"
-import { nanoid } from "@reduxjs/toolkit"
 
+import { type Worker } from "../features/workers/workersInitialState"
 import DeleteActionBtn from "./DeleteActionBtn"
+import { type Company } from "../features/companies/companiesInitialState"
 
-interface TableActionBtnsProps {
+export interface TableActionBtnsProps {
   origin: "companies" | "workers"
-  selectedCompanies?: number[]
-  setSelectedCompanies?: React.Dispatch<React.SetStateAction<number[]>>
-  selectedWorkers?: number[]
-  setSelectedWorkers?: React.Dispatch<React.SetStateAction<number[]>>
   companyId?: number
+  selectedCompanies?: number[]
+  setSelectedCompanies?: React.Dispatch<React.SetStateAction<Company["id"][]>>
   isInfiniteScroll?: boolean
   setIsInfiniteScroll?: React.Dispatch<React.SetStateAction<boolean>>
+  selectedWorkersIds?: Worker["id"][]
+  setSelectedWorkers?: React.Dispatch<React.SetStateAction<Worker["id"][]>>
 }
 
 const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
   origin,
   selectedCompanies,
   setSelectedCompanies,
-  selectedWorkers,
+  selectedWorkersIds,
   setSelectedWorkers,
   companyId,
   isInfiniteScroll,
   setIsInfiniteScroll,
 }) => {
   const companies = useAppSelector(state => state.companies)
-  const employees = useAppSelector(
-    state =>
-      state.workers.find(team => team.companyId === companyId)?.employees,
+  const employees = useAppSelector(state =>
+    state.workers.filter(worker => worker.companyId === companyId),
   )
 
   const dispatch = useAppDispatch()
@@ -107,7 +108,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
         origin={origin}
         handleDeleteRow={handleDeleteRow}
         selectedCompanies={selectedCompanies}
-        selectedWorkers={selectedWorkers}
+        selectedWorkers={selectedWorkersIds}
       />
       {origin === "companies" && setIsInfiniteScroll && (
         <div className="infinite-scroll">
