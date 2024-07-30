@@ -1,4 +1,12 @@
-export const companiesInitialState = [
+export interface Company {
+  id: number
+  name: string
+  address: string
+}
+
+export type Companies = Company[]
+
+export const companiesInitialState: Companies = [
   {
     id: 1,
     name: "ДомСельхозРаботы",

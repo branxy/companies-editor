@@ -1,20 +1,27 @@
-import { useState, type FunctionComponent, useRef, useCallback } from "react"
+import { useCallback, useRef, useState, type FunctionComponent } from "react"
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector, useSelectRows } from "../../app/hooks"
+import { nanoid } from "@reduxjs/toolkit"
+import { companyAdded } from "./companiesSlice"
 
-import CompaniesTableRow from "./CompaniesTableRow"
 import WorkersList from "../workers/WorkersList"
 import TableActionBtns from "../../components/TableActionBtns"
-import { companyAdded } from "./companiesSlice"
-import { nanoid } from "@reduxjs/toolkit"
+import CompaniesTableRow from "./CompaniesTableRow"
 
 const CompaniesList: FunctionComponent = () => {
-  const [selectedCompanies, setSelectedCompanies] = useState<number[]>([])
-  const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
-
   const companies = useAppSelector(state => state.companies)
   const workers = useAppSelector(state => state.workers)
   const dispatch = useAppDispatch()
+  const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
+
+  const [
+    selectedCompaniesIds,
+    setSelectedCompaniesIds,
+    handleSelectCompany,
+    handleSelectAllCompanies,
+    lastSelectedCompany,
+    isCheckedCheckbox,
+  ] = useSelectRows(companies)
 
   const observer = useRef<IntersectionObserver | undefined>()
   const observerTarget = useCallback(
@@ -49,38 +56,14 @@ const CompaniesList: FunctionComponent = () => {
     [companies.length, dispatch, isInfiniteScroll],
   )
 
-  const lastSelectedCompany =
-    selectedCompanies && selectedCompanies[selectedCompanies?.length - 1]
-
-  const isCheckedCheckbox =
-    selectedCompanies.length === companies.length &&
-    selectedCompanies.length > 0
-
-  function handleSelectCompany(companyId: number) {
-    if (!selectedCompanies) {
-      setSelectedCompanies([companyId])
-    } else if (!selectedCompanies.includes(companyId)) {
-      setSelectedCompanies([...selectedCompanies, companyId])
-    } else {
-      setSelectedCompanies(selectedCompanies.filter(id => id !== companyId))
-    }
-  }
-
-  function handleSelectAll() {
-    if (selectedCompanies.length < companies.length) {
-      const allCompaniesIds = companies.map(c => c.id)
-      setSelectedCompanies(allCompaniesIds)
-    } else setSelectedCompanies([])
-  }
-
   return (
     <>
       <div className="table companies">
         <h2>Компании</h2>
         <TableActionBtns
           origin="companies"
-          selectedCompanies={selectedCompanies}
-          setSelectedCompanies={setSelectedCompanies}
+          selectedCompanies={selectedCompaniesIds}
+          setSelectedCompanies={setSelectedCompaniesIds}
           isInfiniteScroll={isInfiniteScroll}
           setIsInfiniteScroll={setIsInfiniteScroll}
         />
@@ -97,7 +80,7 @@ const CompaniesList: FunctionComponent = () => {
                 <input
                   type="checkbox"
                   name="select-all"
-                  onChange={handleSelectAll}
+                  onChange={handleSelectAllCompanies}
                   checked={isCheckedCheckbox}
                 />
               </th>
@@ -121,7 +104,7 @@ const CompaniesList: FunctionComponent = () => {
                     companyName={company.name}
                     employeesNumber={employeesNumber}
                     address={company.address}
-                    selectedCompanies={selectedCompanies}
+                    selectedCompanies={selectedCompaniesIds}
                     handleSelectCompany={handleSelectCompany}
                   />
                 )
@@ -133,7 +116,7 @@ const CompaniesList: FunctionComponent = () => {
                     companyName={company.name}
                     employeesNumber={employeesNumber}
                     address={company.address}
-                    selectedCompanies={selectedCompanies}
+                    selectedCompanies={selectedCompaniesIds}
                     handleSelectCompany={handleSelectCompany}
                   />
                 )
@@ -142,10 +125,10 @@ const CompaniesList: FunctionComponent = () => {
           </tbody>
         </table>
       </div>
-      {selectedCompanies.length ? (
+      {selectedCompaniesIds.length ? (
         <WorkersList
           companyId={lastSelectedCompany}
-          selectedCompanies={selectedCompanies}
+          selectedCompanies={selectedCompaniesIds}
         />
       ) : (
         ""
