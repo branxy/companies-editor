@@ -1,16 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { companiesInitialState, type Company } from "./companiesInitialState"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { createAppSelector } from "../../app/hooks"
+
+import {
+  companiesInitialState,
+  type Companies,
+  type Company,
+} from "./companiesInitialState"
 
 export const companiesSlice = createSlice({
   name: "companies",
   initialState: companiesInitialState,
   reducers: {
-    companyAdded(state, action) {
-      if (action.payload.newCompany) {
-        state.push(action.payload.newCompany)
-      } else if (action.payload.twentyMoreCompanies) {
-        const newState = state.concat(action.payload.twentyMoreCompanies)
+    companyAdded(state, action: PayloadAction<Company | Companies>) {
+      if (!Array.isArray(action.payload)) {
+        state.push(action.payload)
+      } else {
+        const newState = state.concat(action.payload)
         return newState
       }
     },

@@ -5,8 +5,8 @@ import {
   useAppSelector,
   useSelectCompanyTableRows,
 } from "../../app/hooks"
-import { nanoid } from "@reduxjs/toolkit"
 import { companyAdded } from "./companiesSlice"
+import { addMoreCompanies } from "../../app/utils"
 
 import WorkersList from "../workers/WorkersList"
 import TableActionBtns from "../../components/TableActionBtns"
@@ -34,21 +34,8 @@ const CompaniesList: FunctionComponent = () => {
       observer.current = new IntersectionObserver(
         entries => {
           if (entries[0].isIntersecting) {
-            let twentyMoreCompanies = []
-            let nextId = companies.length + 1
-
-            for (let i = 0; i < 20; i++) {
-              nextId++
-              const newCompany = {
-                id: nanoid(),
-                name: `Новая компания №${nextId - 1}`,
-                address: "",
-                employees: [],
-              }
-
-              twentyMoreCompanies.push(newCompany)
-            }
-            dispatch(companyAdded({ twentyMoreCompanies }))
+            const twentyMoreCompanies = addMoreCompanies(companies.length, 20)
+            dispatch(companyAdded(twentyMoreCompanies))
           }
         },
         {
