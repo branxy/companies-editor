@@ -38,11 +38,9 @@ li {
 
 table {
   table-layout: fixed;
-  width: 100%;
   border: 1px solid #1b1b1b;
   border-collapse: collapse;
   vertical-align: middle;
-  overflow-x: auto;
 }
 
 caption {

@@ -33,37 +33,39 @@ const CompaniesList: FunctionComponent = () => {
           isInfiniteScroll={isInfiniteScroll}
           setIsInfiniteScroll={setIsInfiniteScroll}
         />
-        <table>
-          <colgroup>
-            <col className="checkbox" />
-            <col className="company" />
-            <col className="employees" />
-            <col className="address" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  name="select-all"
-                  onChange={handleSelectAllCompanies}
-                  checked={isCheckedCheckbox}
-                />
-              </th>
-              <th>Название компании</th>
-              <th>Кол-во сотрудников</th>
-              <th>Адрес</th>
-            </tr>
-          </thead>
-          <tbody>
-            <CompaniesTableContent
-              companies={companies}
-              selectedCompaniesIds={selectedCompaniesIds}
-              handleSelectCompany={handleSelectCompany}
-              isInfiniteScroll={isInfiniteScroll}
-            />
-          </tbody>
-        </table>
+        <div className="table-wrapper">
+          <table>
+            <colgroup>
+              <col className="checkbox" />
+              <col className="company" />
+              <col className="employees" />
+              <col className="address" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    name="select-all"
+                    onChange={handleSelectAllCompanies}
+                    checked={isCheckedCheckbox}
+                  />
+                </th>
+                <th>Название компании</th>
+                <th>Кол-во сотрудников</th>
+                <th>Адрес</th>
+              </tr>
+            </thead>
+            <tbody>
+              <CompaniesTableContent
+                companies={companies}
+                selectedCompaniesIds={selectedCompaniesIds}
+                handleSelectCompany={handleSelectCompany}
+                isInfiniteScroll={isInfiniteScroll}
+              />
+            </tbody>
+          </table>
+        </div>
       </div>
       {selectedCompaniesIds.length > 0 && (
         <WorkersList
