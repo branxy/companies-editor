@@ -2,7 +2,7 @@ import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit"
 import { type Worker, workersInitialState } from "./workersInitialState"
 import { type Company } from "../companies/companiesInitialState"
 import { type EditableTableCellProps } from "../../components/EditableTableCell"
-import { createAppSelector } from "../../app/hooks"
+import { createAppSelector } from "../../app/redux-hooks"
 
 export const workersSlice = createSlice({
   name: "workers",

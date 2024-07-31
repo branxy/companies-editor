@@ -1,10 +1,11 @@
 import { useState, type FunctionComponent } from "react"
 
-import { useAppSelector, useSelectCompanyTableRows } from "../../app/hooks"
+import { useAppSelector } from "../../app/redux-hooks"
 
 import WorkersList from "../workers/WorkersList"
 import TableActionBtns from "../../components/TableActionBtns"
 import CompaniesTableContent from "./CompaniesTableContent"
+import { useSelectCompanyTableRows } from "../../app/hooks"
 
 const CompaniesList: FunctionComponent = () => {
   const companies = useAppSelector(state => state.companies)
@@ -63,13 +64,11 @@ const CompaniesList: FunctionComponent = () => {
           </tbody>
         </table>
       </div>
-      {selectedCompaniesIds.length ? (
+      {selectedCompaniesIds.length > 0 && (
         <WorkersList
           companyId={lastSelectedCompany}
           selectedCompaniesIds={selectedCompaniesIds}
         />
-      ) : (
-        ""
       )}
     </>
   )

@@ -1,5 +1,5 @@
 import { useState, type FunctionComponent, useRef } from "react"
-import { useAppDispatch } from "../app/hooks"
+import { useAppDispatch } from "../app/redux-hooks"
 import { companyChanged } from "../features/companies/companiesSlice"
 import { workerChanged } from "../features/workers/workersSlice"
 

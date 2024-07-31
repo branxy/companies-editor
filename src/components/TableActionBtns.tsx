@@ -1,7 +1,6 @@
 import { type FunctionComponent } from "react"
 
-import { nanoid } from "@reduxjs/toolkit"
-import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../app/redux-hooks"
 import {
   companyAdded,
   companyDeleted,
@@ -49,12 +48,9 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
       case "companies":
         dispatch(
           companyAdded({
-            newCompany: {
-              id: nanoid(),
-              name: `Новая компания №${companies.length + 1}`,
-              address: "",
-              employees: [],
-            },
+            id: companies.length + 1,
+            name: `Новая компания №${companies.length + 1}`,
+            address: "",
           }),
         )
         break

@@ -1,11 +1,10 @@
-import { type FunctionComponent, useCallback, useRef } from "react"
-
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { selectAllWorkers } from "../workers/workersSlice"
-import { companyAdded } from "./companiesSlice"
-
-import { addMoreCompanies } from "../../app/utils"
+import { type FunctionComponent } from "react"
 import type { Companies, Company } from "./companiesInitialState"
+
+import { useAppSelector } from "../../app/redux-hooks"
+import { selectAllWorkers } from "../workers/workersSlice"
+
+import { useInfiniteScroll } from "../../app/hooks"
 
 import CompaniesTableRow from "./CompaniesTableRow"
 
@@ -23,27 +22,7 @@ const CompaniesTableContent: FunctionComponent<CompaniesTableContentProps> = ({
   isInfiniteScroll,
 }) => {
   const workers = useAppSelector(selectAllWorkers)
-  const dispatch = useAppDispatch()
-
-  const observer = useRef<IntersectionObserver | undefined>()
-  const observerTarget = useCallback(
-    (node: HTMLTableRowElement) => {
-      if (observer.current) observer.current.disconnect()
-      observer.current = new IntersectionObserver(
-        entries => {
-          if (entries[0].isIntersecting) {
-            const twentyMoreCompanies = addMoreCompanies(companies.length, 20)
-            dispatch(companyAdded(twentyMoreCompanies))
-          }
-        },
-        {
-          rootMargin: "100px",
-        },
-      )
-      if (node && isInfiniteScroll) observer.current.observe(node)
-    },
-    [companies.length, dispatch, isInfiniteScroll],
-  )
+  const observerTarget = useInfiniteScroll(companies.length, isInfiniteScroll)
 
   return (
     <>
@@ -55,7 +34,7 @@ const CompaniesTableContent: FunctionComponent<CompaniesTableContentProps> = ({
         return i === companies.length - 1 ? (
           <CompaniesTableRow
             ref={observerTarget}
-            key={company.id}
+            key={company.id + company.address}
             companyId={company.id}
             companyName={company.name}
             employeesNumber={employeesNumber}
@@ -65,7 +44,7 @@ const CompaniesTableContent: FunctionComponent<CompaniesTableContentProps> = ({
           />
         ) : (
           <CompaniesTableRow
-            key={company.id}
+            key={company.id + company.address}
             companyId={company.id}
             companyName={company.name}
             employeesNumber={employeesNumber}

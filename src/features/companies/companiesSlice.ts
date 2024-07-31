@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { createAppSelector } from "../../app/hooks"
+import { createAppSelector } from "../../app/redux-hooks"
 
 import {
   companiesInitialState,

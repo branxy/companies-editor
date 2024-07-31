@@ -1,7 +1,7 @@
 import { type FunctionComponent } from "react"
 
 import { type RootState } from "../../app/store"
-import { useAppSelector, useSelectWorkerTableRows } from "../../app/hooks"
+import { useAppSelector } from "../../app/redux-hooks"
 
 import { type Company } from "../companies/companiesInitialState"
 
@@ -9,6 +9,7 @@ import WorkersTableRow from "./WorkersTableRow"
 import TableActionBtns from "../../components/TableActionBtns"
 import { selectCompanyById } from "../companies/companiesSlice"
 import { selectWorkersByCompanyId } from "./workersSlice"
+import { useSelectWorkerTableRows } from "../../app/hooks"
 
 interface WorkersListProps {
   companyId: RootState["companies"][0]["id"]
