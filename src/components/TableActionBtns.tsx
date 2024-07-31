@@ -48,10 +48,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
         dispatch(companyAdded(1))
         break
       case "workers":
-        if (employees) {
-          dispatch(workerAdded(companyId!, employees.length + 1))
-        }
-
+        dispatch(workerAdded(companyId!, employees.length + 1))
         break
       default:
         throw new Error("Unknown type of origin:" + origin)

@@ -1,13 +1,21 @@
-
-import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit"
+import {
+  createEntityAdapter,
+  createSlice,
+  nanoid,
+  type PayloadAction,
+} from "@reduxjs/toolkit"
 import { type Worker, workersInitialState } from "./workersInitialState"
 import { type Company } from "../companies/companiesInitialState"
 import { type EditableTableCellProps } from "../../components/EditableTableCell"
+import { type RootState } from "../../app/store"
 import { createAppSelector } from "../../app/redux-hooks"
+
+const workersAdaptor = createEntityAdapter<Worker>(),
+  initialState = workersAdaptor.getInitialState({}, workersInitialState)
 
 export const workersSlice = createSlice({
   name: "workers",
-  initialState: workersInitialState,
+  initialState,
   reducers: create => ({
     workerAdded: create.preparedReducer(
       (companyId: Company["id"], newWorkerNumber: number) => {
@@ -26,7 +34,7 @@ export const workersSlice = createSlice({
           position: "",
         }
 
-        state.push(newWorker)
+        workersAdaptor.addOne(state, newWorker)
       },
     ),
     workerChanged: create.reducer(
@@ -43,7 +51,7 @@ export const workersSlice = createSlice({
       ) => {
         const { origin, workerId } = action.payload
 
-        const worker = state.find(w => w.id === workerId)
+        const worker = state.entities[workerId]
         if (worker) {
           switch (origin) {
             case "worker/lastName":
@@ -68,10 +76,8 @@ export const workersSlice = createSlice({
           selectedWorkersIds: Worker["id"][]
         }>,
       ) => {
-        const { selectedWorkersIds: workersToDelete } = action.payload
-        const newState = state.filter(w => !workersToDelete.includes(w.id))
-
-        return newState
+        const { selectedWorkersIds } = action.payload
+        workersAdaptor.removeMany(state, selectedWorkersIds)
       },
     ),
   }),
@@ -80,7 +86,9 @@ export const workersSlice = createSlice({
   },
 })
 
-export const { selectAllWorkers } = workersSlice.selectors
+export const { selectAll: selectAllWorkers } = workersAdaptor.getSelectors(
+  (state: RootState) => state.workers,
+)
 
 export const selectWorkersByCompanyId = createAppSelector(
   [selectAllWorkers, (state, id?: Company["id"]) => id],
