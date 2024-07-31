@@ -1,21 +1,14 @@
-import { useCallback, useRef, useState, type FunctionComponent } from "react"
+import { useState, type FunctionComponent } from "react"
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useSelectCompanyTableRows,
-} from "../../app/hooks"
-import { companyAdded } from "./companiesSlice"
-import { addMoreCompanies } from "../../app/utils"
+import { useAppSelector, useSelectCompanyTableRows } from "../../app/hooks"
 
 import WorkersList from "../workers/WorkersList"
 import TableActionBtns from "../../components/TableActionBtns"
-import CompaniesTableRow from "./CompaniesTableRow"
+import CompaniesTableContent from "./CompaniesTableContent"
 
 const CompaniesList: FunctionComponent = () => {
   const companies = useAppSelector(state => state.companies)
-  const workers = useAppSelector(state => state.workers)
-  const dispatch = useAppDispatch()
+
   const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
 
   const [
@@ -26,26 +19,6 @@ const CompaniesList: FunctionComponent = () => {
     lastSelectedCompany,
     isCheckedCheckbox,
   ] = useSelectCompanyTableRows(companies)
-
-  const observer = useRef<IntersectionObserver | undefined>()
-  const observerTarget = useCallback(
-    (node: HTMLTableRowElement) => {
-      if (observer.current) observer.current.disconnect()
-      observer.current = new IntersectionObserver(
-        entries => {
-          if (entries[0].isIntersecting) {
-            const twentyMoreCompanies = addMoreCompanies(companies.length, 20)
-            dispatch(companyAdded(twentyMoreCompanies))
-          }
-        },
-        {
-          rootMargin: "100px",
-        },
-      )
-      if (node && isInfiniteScroll) observer.current.observe(node)
-    },
-    [companies.length, dispatch, isInfiniteScroll],
-  )
 
   return (
     <>
@@ -81,38 +54,12 @@ const CompaniesList: FunctionComponent = () => {
             </tr>
           </thead>
           <tbody>
-            {companies.map((company, i) => {
-              const team = workers.filter(w => w.companyId === company.id)
-              const employeesNumber = team?.length || 0
-
-              // if the company is last on the list, an infinite scroll observer is added as ref
-              if (i === companies.length - 1) {
-                return (
-                  <CompaniesTableRow
-                    ref={observerTarget}
-                    key={company.id}
-                    companyId={company.id}
-                    companyName={company.name}
-                    employeesNumber={employeesNumber}
-                    address={company.address}
-                    selectedCompanies={selectedCompaniesIds}
-                    handleSelectCompany={handleSelectCompany}
-                  />
-                )
-              } else {
-                return (
-                  <CompaniesTableRow
-                    key={company.id}
-                    companyId={company.id}
-                    companyName={company.name}
-                    employeesNumber={employeesNumber}
-                    address={company.address}
-                    selectedCompanies={selectedCompaniesIds}
-                    handleSelectCompany={handleSelectCompany}
-                  />
-                )
-              }
-            })}
+            <CompaniesTableContent
+              companies={companies}
+              selectedCompaniesIds={selectedCompaniesIds}
+              handleSelectCompany={handleSelectCompany}
+              isInfiniteScroll={isInfiniteScroll}
+            />
           </tbody>
         </table>
       </div>
