@@ -8,7 +8,6 @@ import {
   type Worker,
   type Workers,
 } from "../features/workers/workersInitialState"
-import { addMoreCompanies } from "./utils"
 import { companyAdded } from "../features/companies/companiesSlice"
 import { useAppDispatch } from "./redux-hooks"
 
@@ -119,8 +118,7 @@ export function useInfiniteScroll(
       observer.current = new IntersectionObserver(
         entries => {
           if (entries[0].isIntersecting) {
-            const twentyMoreCompanies = addMoreCompanies(companiesLength, 20)
-            dispatch(companyAdded(twentyMoreCompanies))
+            dispatch(companyAdded(20))
           }
         },
         {
@@ -129,7 +127,7 @@ export function useInfiniteScroll(
       )
       if (node && isInfiniteScroll) observer.current.observe(node)
     },
-    [companiesLength, dispatch, isInfiniteScroll],
+    [dispatch, isInfiniteScroll],
   )
 
   return observerTarget

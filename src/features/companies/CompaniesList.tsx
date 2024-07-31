@@ -6,9 +6,10 @@ import WorkersList from "../workers/WorkersList"
 import TableActionBtns from "../../components/TableActionBtns"
 import CompaniesTableContent from "./CompaniesTableContent"
 import { useSelectCompanyTableRows } from "../../app/hooks"
+import { selectAllCompanies } from "./companiesSlice"
 
 const CompaniesList: FunctionComponent = () => {
-  const companies = useAppSelector(state => state.companies)
+  const companies = useAppSelector(selectAllCompanies)
 
   const [isInfiniteScroll, setIsInfiniteScroll] = useState(false)
 

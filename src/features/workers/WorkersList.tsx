@@ -1,18 +1,17 @@
 import { type FunctionComponent } from "react"
-
-import { type RootState } from "../../app/store"
-import { useAppSelector } from "../../app/redux-hooks"
-
 import { type Company } from "../companies/companiesInitialState"
+
+import { useAppSelector } from "../../app/redux-hooks"
+import { selectCompanyById } from "../companies/companiesSlice"
+import { selectWorkersByCompanyId } from "./workersSlice"
+
+import { useSelectWorkerTableRows } from "../../app/hooks"
 
 import WorkersTableRow from "./WorkersTableRow"
 import TableActionBtns from "../../components/TableActionBtns"
-import { selectCompanyById } from "../companies/companiesSlice"
-import { selectWorkersByCompanyId } from "./workersSlice"
-import { useSelectWorkerTableRows } from "../../app/hooks"
 
 interface WorkersListProps {
-  companyId: RootState["companies"][0]["id"]
+  companyId: Company["id"]
   selectedCompaniesIds: Company["id"][]
 }
 
@@ -20,7 +19,7 @@ const WorkersList: FunctionComponent<WorkersListProps> = ({
   companyId,
   selectedCompaniesIds,
 }) => {
-  const company = useAppSelector(state => selectCompanyById(state, companyId))!
+  const company = useAppSelector(state => selectCompanyById(state, companyId))
   const employees = useAppSelector(state =>
     selectWorkersByCompanyId(state, companyId),
   )

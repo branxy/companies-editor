@@ -36,7 +36,6 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
   isInfiniteScroll,
   setIsInfiniteScroll,
 }) => {
-  const companies = useAppSelector(state => state.companies)
   const employees = useAppSelector(state =>
     selectWorkersByCompanyId(state, companyId),
   )
@@ -46,17 +45,11 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
   function handleAddRow() {
     switch (origin) {
       case "companies":
-        dispatch(
-          companyAdded({
-            id: companies.length + 1,
-            name: `Новая компания №${companies.length + 1}`,
-            address: "",
-          }),
-        )
+        dispatch(companyAdded(1))
         break
       case "workers":
         if (employees) {
-          dispatch(workerAdded(companyId!, employees.length))
+          dispatch(workerAdded(companyId!, employees.length + 1))
         }
 
         break
@@ -68,11 +61,7 @@ const TableActionBtns: FunctionComponent<TableActionBtnsProps> = ({
   function handleDeleteRow() {
     switch (origin) {
       case "companies":
-        dispatch(
-          companyDeleted({
-            selectedCompanies,
-          }),
-        )
+        dispatch(companyDeleted(selectedCompanies!))
         if (setSelectedCompanies) setSelectedCompanies([])
         break
       case "workers":

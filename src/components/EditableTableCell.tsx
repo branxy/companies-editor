@@ -6,13 +6,14 @@ import { workerChanged } from "../features/workers/workersSlice"
 import { type Worker } from "../features/workers/workersInitialState"
 import { type Company } from "../features/companies/companiesInitialState"
 
+export type Origin =
+  | "company/name"
+  | "company/address"
+  | "worker/lastName"
+  | "worker/firstName"
+  | "worker/position"
 export interface EditableTableCellProps {
-  origin:
-    | "company/name"
-    | "company/address"
-    | "worker/lastName"
-    | "worker/firstName"
-    | "worker/position"
+  origin: Origin
   companyId?: Company["id"]
   workerId?: Worker["id"]
   cellValue: string
@@ -39,7 +40,7 @@ const EditableTableCell: FunctionComponent<EditableTableCellProps> = ({
         dispatch(
           companyChanged({
             origin,
-            companyId,
+            companyId: companyId!,
             name: value,
           }),
         )
@@ -48,7 +49,7 @@ const EditableTableCell: FunctionComponent<EditableTableCellProps> = ({
         dispatch(
           companyChanged({
             origin,
-            companyId,
+            companyId: companyId!,
             address: value,
           }),
         )

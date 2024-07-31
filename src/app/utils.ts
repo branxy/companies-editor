@@ -1,17 +1,14 @@
 import { type Company } from "../features/companies/companiesInitialState"
 
-export function addMoreCompanies(
-  companiesLength: number,
-  quantity: number = 20,
-) {
+let nextId = 10
+
+export function addMoreCompanies(quantity: number = 20) {
   const moreCompanies = []
-  let nextCompanyNumber = companiesLength + 1
 
   for (let i = 0; i < quantity; i++) {
-    nextCompanyNumber++
     const newCompany: Company = {
-      id: nextCompanyNumber,
-      name: `Новая компания №${nextCompanyNumber - 1}`,
+      id: ++nextId,
+      name: `Новая компания № ${nextId}`,
       address: "",
     }
 

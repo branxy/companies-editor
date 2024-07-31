@@ -1,50 +1,66 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { createAppSelector } from "../../app/redux-hooks"
-
 import {
-  companiesInitialState,
-  type Companies,
-  type Company,
-} from "./companiesInitialState"
+  createEntityAdapter,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit"
+
+import { companiesInitialState, type Company } from "./companiesInitialState"
+import { type RootState } from "../../app/store"
+import { addMoreCompanies } from "../../app/utils"
+
+const companiesAdaptor = createEntityAdapter<Company>(),
+  initialState = companiesAdaptor.getInitialState({}, companiesInitialState)
 
 export const companiesSlice = createSlice({
   name: "companies",
-  initialState: companiesInitialState,
-  reducers: {
-    companyAdded(state, action: PayloadAction<Company | Companies>) {
-      if (!Array.isArray(action.payload)) {
-        state.push(action.payload)
-      } else {
-        const newState = state.concat(action.payload)
-        return newState
-      }
-    },
+  initialState,
+  reducers: create => ({
+    companyAdded: create.reducer((state, action: PayloadAction<number>) => {
+      const newCompanies = addMoreCompanies(action.payload)
 
-    companyChanged(state, action) {
-      const { origin, companyId } = action.payload
-      const company = state.find(c => c.id === companyId)
-      if (company) {
-        switch (origin) {
-          case "company/name":
-            company.name = action.payload.name
-            break
-          case "company/address":
-            company.address = action.payload.address
-            break
-          default:
-            throw new Error("Unknown type of origin:" + origin)
+      companiesAdaptor.addMany(state, newCompanies)
+    }),
+    companyChanged: create.reducer(
+      (
+        state,
+        action: PayloadAction<
+          {
+            companyId: Company["id"]
+          } & (
+            | {
+                origin: "company/name"
+                name: Company["name"]
+              }
+            | {
+                origin: "company/address"
+                address: Company["address"]
+              }
+          )
+        >,
+      ) => {
+        const { origin, companyId } = action.payload
+
+        const company = state.entities[companyId]
+        if (company) {
+          switch (origin) {
+            case "company/name":
+              company.name = action.payload.name
+              break
+            case "company/address":
+              company.address = action.payload.address
+              break
+            default:
+              throw new Error("Unknown type of origin:" + origin)
+          }
         }
-      }
-    },
-
-    companyDeleted(state, action) {
-      return state.filter(company => {
-        if (action.payload.selectedCompanies.includes(company.id)) {
-          return false
-        } else return true
-      })
-    },
-  },
+      },
+    ),
+    companyDeleted: create.reducer(
+      (state, action: PayloadAction<Company["id"][]>) => {
+        companiesAdaptor.removeMany(state, action.payload)
+      },
+    ),
+  }),
   selectors: {
     selectAllCompanies: state => state,
   },
@@ -52,11 +68,7 @@ export const companiesSlice = createSlice({
 export const { companyAdded, companyChanged, companyDeleted } =
   companiesSlice.actions
 
-export const { selectAllCompanies } = companiesSlice.selectors
-
-export const selectCompanyById = createAppSelector(
-  [selectAllCompanies, (state, id: Company["id"]) => id],
-  (state, id) => state.find(company => company.id === id),
-)
+export const { selectAll: selectAllCompanies, selectById: selectCompanyById } =
+  companiesAdaptor.getSelectors((state: RootState) => state.companies)
 
 export default companiesSlice.reducer
